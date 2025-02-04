@@ -338,23 +338,39 @@ select * from employee where (job_code = 'J7' or job_code = 'J2') and salary>=20
 
 --------------------------------------------------------------------------------------------------
 /*
-    <order by 절>
-    select 문 가장 마지막 줄에작성 실행순서 또한 마지막에 실행
+    <ORDER BY 절>
+    SELECT문 가장 마지막 줄에 작성. 실행순서 또한 마지막에 실행
     
     [표현법]
-    select 
-    from 테이블명
-    where
-    order by 정렬기준의 컬럼명| 별칭 | 컬럼순번| [ASC]|[DESC] [NULL FRIST | NULL LAST];
+    SELECT 
+    FROM
+    WHERE
+    ORDER BY 정렬기준의 컬럼명 | 별칭 | 컬럼순번 [ASC|DESC] [NULLS FIRST | NULL LAST];
     
     - ASC : 오름차순 정렬(생략시 기본값)
     - DESC : 내림차순 정렬
     
-    - NULL FIRST : 생략시 DESC일때의 기본값 . 정렬하고자하는 컬럼값에 NULL이 있는 경우 데이터를 맨 앞에 배치한다.
-    - NULL LAST : 생락시 ASC일때의 기본값. 정렬하고자하는 컬럼값에 NULL이 있는 경우 데이터를 맨 뒤에 배치한다.
+    - NULLS FIRST : 생략시 DESC일때의 기본값.  정렬하고자하는 컬럼값에 NULL이 있는 경우 데이터를 맨 앞에 배치
+    - NULLS LAST : 생략시 ASC일때의 기본값. 정렬하고자하는 컬럼값에 NULL이 있는 경우 데이터를 맨 뒤에 배치
 */
 
 
+SELECT *
+FROM EMPLOYEE
+-- ORDER BY BONUS;                         보너스의 오름차순 정렬(NULL값은 맨 마지막에 나옴)
+-- ORDER BY BONUS ASC;                  보너스의 오름차순 정렬(NULL값은 맨 마지막에 나옴)
+-- ORDER BY BONUS NULLS FIRST;      보너스의 오름차순 정렬. NULL값은 맨 앞에 배치
+
+-- ORDER BY BONUS DESC;                 보너스의 내림차순 정렬(NULL값은 맨 앞에 나옴)
+ORDER BY BONUS DESC, SALARY;       -- 보너스의 내림차순 정렬을 하고, 보너스가 같으면 급여의 오름차순 정렬
+
+
+-- EMPLOYEE테이블에서 모든 사원의 사원명, 연봉 조회(이때 연봉의 내림차순 정렬 조회)
+SELECT EMP_NAME, SALARY*12 연봉
+FROM EMPLOYEE
+-- ORDER BY SALARY*12 DESC;
+-- ORDER BY 연봉  DESC;     -- 별칭 사용 가능
+ORDER BY 2 DESC;            -- 2번째 컬럼
 
 
 
