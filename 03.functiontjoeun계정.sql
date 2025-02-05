@@ -53,6 +53,7 @@ select email , instr(email,'_')"_위치", instr(email,'@')"@위치" from employe
 
 /*
     *SUbSTR : 문자열에서 특정 문자열을 추출하여 반환(반환형 : CHARACHTER)
+    
     SUBSTR('문자열',position,[LENGTH]
      - POSITION : 문자열을 추출할 시작 위치 INDEX
      - LENGTH : 추출한 문자의 갯수(생략시 맨 마지막까지 추출)
@@ -420,18 +421,139 @@ select emp_name,NVL2(dept_code,'부서있음','부서없음')from employee;
 
 -- employee 테이블에서 사원명 급여 보너스 성과급(보너스를 받는사람은 30%를 주고 보너스를 못받는사람은 10%)
 select emp_name,salary,bonus,nvl2(bonus,salary*0.3,salary*0.1) as 성과급 from employee;
+
+---------------------------------------------------------------------------------------------------------
+/*
+    * NULLIF(비교대상1, 비교대상2)
+      - 두개의 값이 일치하면 NULL반환
+      - 두개의 값이 일치하지 않으면 비교대상1의 값 반환
+*/
+SELECT NULLIF('123','123') FROM DUAL;
+SELECT NULLIF('123','345') FROM DUAL;
+--==========================================================================================
+--                            <선택함수>
+--==========================================================================================
+/*
+    DECODE(비교하고자하는 대상(컬럼|산순연산|함수식|),비교값1,결과값1,비교값2,결과값2...) << 표현식
+    
+    switch(비교대상){
+    case 비교값1:
+        결과값1
+        break;
+        case 비교값2:
+        결과값2
+    }
+*/
+
+-- 사번 사원명 주민번호 성별(남,여)
+select emp_id,emp_name,emp_no,decode(substr(emp_no,8,1),'1','남자','2','여자','3','남자',',4','여자')as 성별 from employee; 
+select* from employee;
+-- 사원명 직급코드 기존급여 인상된급여
+/*
+    J7 : 10%인상
+    J6 : 15%인상
+    J5 : 20%인상
+    그외 : 5%
+*/
+select emp_name, job_code,salary,decode(job_code,'J7',salary*1.1,'67',salary*1.15,'J5',salary*1.2,salary*1.05)as인상된급여 from employee;
+
+----------------------------------------------------------------------------------------------
+/*
+    *CASE WHEN THEN
+        END
+        
+    CASE WHEN 조건식1 THEN 결과값1   << 표현식
+         WHEN 조건식2 THEN 결과값2
+         ....
+         ELSE 결과값 
+    END
+    -----------------------------------     
+    IF(조건식){ 조건식이 참일때 실행}
+    ELSE IF(조건식){조건이 참일 때 실행}
+    ELSE IF(조건식){조건이 참일 때 실행}
+    ....
+    ELSE(실행문)
+    ----------------------------------------
+*/
+-- 사원명 급여 등급(급여에 따라 등급을 매긴다(5백만원 이상이면 '고급', 5백~3백 '중급', 나머지 '초급')
+select emp_name, salary, case when salary>=5000000 then'고급' when salary>=3000000 then '중급' else '초급' end as 등급 from employee;
+
+
+--==========================================================================================
+--                            <그룹함수>
+--==========================================================================================
+/*
+    *SUM(숫자타입의 컬럼) : 해당 컬럼 값들의 총 합계를 반환해주는 함수
+*/
+--전사원의 총 급여의 합
+select sum(salary) from employee;
+-- 남자사원의 총 급여의 합
+select sum(salary)"남자사원 급여의합" from employee 
+ -- where substr(emp_no,8,1) = '1' or substr(emp_no,8,1) = '3';
+where substr(emp_no,8,1) in ('1','3');
+
+-- 부서코드가 D5인 사원의 연봉의 총합
+select sum(salary*12) from employee where dept_code = 'D5';
+-- 부서코드가 D5인 사원의 보너스를 포함한 연봉의 총합
+select sum(salary*nvl(1+bonus,1)*12)"D5인 사원의 보너스포함 연봉의 총합" from employee where dept_code = 'D5';
+
+-- 전사원의 총 급여의 합 형식 \000,000,000
+select to_char(sum(salary),'L999,999,999')"총급여의 합" from employee;
+------------------------------------------------------------------
+
+/*
+    AVG(숫자타입의 컬럼) : 해당 컬럼값의 평균을 반환해주는 함수
+*/
+select avg(salary) from employee;
+
+select round(avg(salary)) from employee;
+select round(avg(salary),2) from employee;
+
+-------------------------------------------------------------------
+/*
+    MIN(모든타입의 컬럼) : 해당 컬럼값들 중 가장 작은값을 반환해주는 함수
+    MAX(모든타입의 컬럼) : 해당 컬럼값들 중 가장 큰값을 반환해주는 함수
+*/
+select min(emp_name) ,min(salary),min(hire_date) from employee;
+
+select max(emp_name) ,max(salary),max(hire_date) from employee;
+
+-------------------------------------------------------------------
+/*
+    *COUNT(*|컬럼|DISTINCT 컬럼) : 행 갯수 반환
+    
+    COUNT(*) : 조회된 결과의 모든 행의 갯수 반환
+    COUNT(컬럼) : 컬럼의 NULL값을 제외한 행의 갯수 반환
+    COUNT(DISTINCT 컬럼) : 컬럼값에서 중복을 제거한 행의 갯수 반환
+*/
+-- 전체 사원의 수
+
+select count(*) from employee;
+
+-- 여자 사원의 수
+select count(*) from employee where substr(emp_no,8,1)in('2','4');
+
+-- 보너스 받는 사원의 수
+select count(bonus) from employee;
+
+-- 현재 사원들이 총 몇개의 부서에 분포되어있는지
+select count(distinct(dept_code))as 부서의수 from employee;
+
+
+
 --==========================================================================================
 --                            <연습문제>
 --==========================================================================================
 
 ------------------------------- 종합 문제 ----------------------------------
 select * from employee;
+
 -- 1. EMPLOYEE테이블에서 사원 명과 직원의 주민번호를 이용하여 생년, 생월, 생일 조회
-SELECT emp_name, 
-       SUBSTR(emp_no, 1, 2) AS 생년, 
-       SUBSTR(emp_no, 3, 2) AS 생월, 
-       SUBSTR(emp_no, 5, 2) AS 생일
-FROM employee;
+select emp_name, 
+       substr(emp_no, 1, 2) as 생년, 
+       substr(emp_no, 3, 2) as 생월, 
+       substr(emp_no, 5, 2) as 생일
+from employee;
 -- 2. EMPLOYEE테이블에서 사원명, 주민번호 조회 (단, 주민번호는 생년월일만 보이게 하고, '-'다음 값은 '*'로 바꾸기)
 select emp_name,RPAD(SUBSTR(EMP_NO, 1, 7), 13, '*')as 주민번호 from employee;
 -- 3. EMPLOYEE테이블에서 사원명, 입사일-오늘, 오늘-입사일 조회
@@ -446,20 +568,32 @@ select emp_name,TO_CHAR(SALARY, 'L99,999,999') from employee;
 -- 7. EMPLOYEE테이블에서 직원 명, 부서코드, 생년월일, 나이 조회
 --   (단, 생년월일은 주민번호에서 추출해서 00년 00월 00일로 출력되게 하며 
 --   나이는 주민번호에서 출력해서 날짜데이터로 변환한 다음 계산)
-select emp_name,dept_code,  EXTRACT(YEAR FROM emp_no)년 , EXTRACT(MONTH FROM emp_no)월 , EXTRACT(DAY FROM emp_no) 일
+select emp_name,dept_code,  SUBSTR(emp_no, 1, 2) || '년 ' || SUBSTR(emp_no, 3, 2) || '월 ' || SUBSTR(emp_no, 5, 2) || '일' AS 생년월일 ,
+abs(floor(months_between(sysdate, to_date(substr(emp_no, 1, 6), 'YYMMDD')) / 12)) AS 나이
+from employee;
 -- 8. EMPLOYEE테이블에서 부서코드가 D5, D6, D9인 사원만 조회하되 D5면 총무부
 --   , D6면 기획부, D9면 영업부로 처리(EMP_ID, EMP_NAME, DEPT_CODE, 총무부)
 --    (단, 부서코드 오름차순으로 정렬)
+select emp_id, emp_name ,dept_code,
+case when dept_code='D5'then'총무부' 
+     when dept_code='D6'then'기획부'
+     when dept_code='D9'then'영업부' end "부서명" 
+from employee where  dept_code in ('D5', 'D6','D9');
 
 -- 9. EMPLOYEE테이블에서 사번이 201번인 사원명, 주민번호 앞자리, 주민번호 뒷자리, 
 --    주민번호 앞자리와 뒷자리의 합 조회
-
+select emp_name,substr(emp_no,1,6) as 주민번호앞자리, substr(emp_no,8,14)as주민번호뒷자리,substr(emp_no,1,6)+substr(emp_no,8,14)as 앞자리와뒷자리의합 from employee;
 -- 10. EMPLOYEE테이블에서 부서코드가 D5인 직원의 보너스 포함 연봉 합 조회
-
+select emp_name,salary*12as연봉,bonus,(salary*bonus+salary)*12 as 보너스포함연봉 from employee where dept_code = 'D5';
 -- 11. EMPLOYEE테이블에서 직원들의 입사일로부터 년도만 가지고 각 년도별 입사 인원수 조회
 --      전체 직원 수, 2001년, 2002년, 2003년, 2004년
-
-
+select 
+    count(*) as "전체 직원",
+    count(case when to_char(hire_date, 'yyyy') = '2001' then 1 end) as "2001년 입사 인원",
+    count(case when to_char(hire_date, 'yyyy') = '2002' then 1 end) as "2002년 입사 인원",
+    count(case when to_char(hire_date, 'yyyy') = '2003' then 1 end) as "2003년 입사 인원",
+    count(case when to_char(hire_date, 'yyyy') = '2004' then 1 end) as "2004년 입사 인원"
+from employee;
 
 
 
