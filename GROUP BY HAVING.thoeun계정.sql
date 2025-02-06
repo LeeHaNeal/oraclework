@@ -1,5 +1,5 @@
 /*
-    <GROUP BY절>
+    <GROUP BY절>EMPLOYEE
     여러개의 값들을 하나의 그룹으로 묶어서 처리할 목적으로 사용
 */
 
@@ -11,7 +11,7 @@ GROUP BY DEPT_CODE;
 -- 각 부서별 사원 수
 SELECT DEPT_CODE, COUNT(*)
 FROM EMPLOYEE
-GROUP BY DEPT_CODE;
+GROUP BY DEPT_CODE;DEPARTMENT
 
 SELECT DEPT_CODE, SUM(SALARY), COUNT(*)
 FROM EMPLOYEE
@@ -150,5 +150,43 @@ where salary > 3000000;
 select emp_name,dept_code,salary
 from employee
 where dept_code = 'D5' or salary > 3000000;
+
+
+-----------------------2. INTERSECT------------------------------------
+-- 부서코드가 d5이면서 급여가 300만원 초과인 사원의 사번 사원명 부서코드 급여 조회
+
+select emp_id,emp_name,dept_code,salary
+from employee
+where dept_code ='D5'
+intersect
+select emp_id,emp_name,dept_code,salary
+from employee
+where salary >3000000;
+-- 집합연산자 사용시 주의사항
+-- 각 쿼리문의 select절에는 작성되는 동일한 컬럼이어야 함 ex)158절과162절이 똑같아야한다는 말
+
+-----------------------3. UNION ALL------------------------------------
+
+select emp_id,emp_name,dept_code,salary
+from employee
+where dept_code ='D5'
+union all
+select emp_id,emp_name,dept_code,salary
+from employee
+where salary >3000000;
+
+-----------------------4. MINUS------------------------------------
+select emp_id,emp_name,dept_code,salary
+from employee
+where dept_code ='D5'
+MINUS
+select emp_id,emp_name,dept_code,salary
+from employee
+where salary >3000000;
+
+-- and
+select emp_id,emp_name,dept_code,salary
+from employee
+where dept_code ='D5' and salary <=3000000; -- D5인 사원들중에서 300만원 이하인 사원
 
 

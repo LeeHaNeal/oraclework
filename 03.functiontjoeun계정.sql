@@ -295,7 +295,7 @@ select emp_name,hire_date,last_day(hire_date) from employee;
     EXTRACT(DAY FROM DATE) : 일만 추출
 */
 
-SELECT emp_name, extract(year from hire_date)입사년,extract(month from hire_date)입사월,extract(day from hire_date)입사일 from employee order by 2,3,4;
+SELECT emp_name, extract(year from hire_date)입사년,extract(month from hire_date)입사월,extract(day from hire_date)입사일 from employee by 2,3,4;
 
 --==========================================================================================
 --                            <형변환 함수>
@@ -402,7 +402,7 @@ select to_number('1,000,000','9,999,999')+ to_number('5,000,000','9,999,999') fr
 */
 select emp_name,bonus,NVL(bonus,0) from employee;
 
--- 전사원의 이름 보너스포함 연봉 조회
+-- 전사원의 이름 보너스포함  조회
 select emp_name,NVL(salary*(1+bonus)*12,0) from employee;
 
 select emp_name,salary*(1+NVL(bonus,0))*12 from employee;
