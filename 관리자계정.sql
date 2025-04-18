@@ -56,3 +56,37 @@ ALTER USER ddl default tablespace users quota unlimited on users;
 
 -- tjoeun view 생성 권한
 GRANT CREATE VIEW TO TJOEUN;
+
+ALTER SESSION SET "_oracle_script" = true;
+CREATE USER jsp IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO jsp;
+ALTER USER jsp default tablespace users quota unlimited on users;
+
+----
+ALTER SESSION SET "_oracle_script" = true;
+CREATE USER SEQ_VOTE IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO SEQ_VOTE;
+ALTER USER SEQ_VOTE default tablespace users quota unlimited on users;
+
+ALTER SESSION SET "_oracle_script" = true;
+CREATE USER jsp2 IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO jsp2;
+ALTER USER jsp2 default tablespace users quota unlimited on users;
+
+
+ALTER SESSION SET "_oracle_script" = true;
+CREATE USER mybatis IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO mybatis;
+ALTER USER mybatis default tablespace users quota unlimited on users;
+
+ALTER SESSION SET "_oracle_script" = true;
+CREATE USER springboot IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO springboot;
+ALTER USER springboot default tablespace users quota unlimited on users;
+
+ALTER SESSION SET "_oracle_script" = true;
+CREATE USER semi IDENTIFIED BY 1234;
+GRANT CONNECT, RESOURCE TO semi;
+ALTER USER semi default tablespace users quota unlimited on users;
+
+
